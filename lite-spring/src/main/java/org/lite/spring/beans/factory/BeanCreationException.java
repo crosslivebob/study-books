@@ -1,4 +1,4 @@
-package org.lite.spring.factory;
+package org.lite.spring.beans.factory;
 
 import org.lite.spring.beans.BeansException;
 
