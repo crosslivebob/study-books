@@ -28,7 +28,7 @@ public class BeanFactoryTest {
 	@Test
 	public void testGetBean() {
 
-		reader.loadBeanDefinition(new ClassPathResource("petstore-v1.xml"));
+		reader.loadBeanDefinitions(new ClassPathResource("petstore-v1.xml"));
 
 		BeanDefinition bd = factory.getBeanDefinition("petStore");
 
@@ -51,7 +51,7 @@ public class BeanFactoryTest {
 	@Test
 	public void testInvalidBean(){
 
-		reader.loadBeanDefinition(new ClassPathResource("petstore-v1.xml"));
+		reader.loadBeanDefinitions(new ClassPathResource("petstore-v1.xml"));
 		try{
 			factory.getBean("invalidBean");
 		}catch(BeanCreationException e){
@@ -64,7 +64,7 @@ public class BeanFactoryTest {
 	public void testInvalidXML(){
 
 		try{
-			reader.loadBeanDefinition(new ClassPathResource("xxx.xml"));
+			reader.loadBeanDefinitions(new ClassPathResource("xxx.xml"));
 		}catch(BeanDefinitionStoreException e){
 			return;
 		}

@@ -1,5 +1,7 @@
 package org.lite.spring.beans;
 
+import java.util.List;
+
 /**
  * Created by bfq on 2020/2/13
  */
@@ -15,4 +17,7 @@ public interface BeanDefinition {
     boolean isPrototype();
 
     String getScope();
+    void setScope(String scope);
+
+    List<PropertyValue> getPropertyValues();
 }
