@@ -12,12 +12,17 @@ public interface BeanDefinition {
 
     public String getBeanClassName();
 
-    boolean isSingleton();
+    public boolean isSingleton();
 
-    boolean isPrototype();
+    public boolean isPrototype();
 
     String getScope();
     void setScope(String scope);
 
-    List<PropertyValue> getPropertyValues();
+    public List<PropertyValue> getPropertyValues();
+
+    public ConstructorArgument getConstructorArgument();
+    public boolean hasConstructorArgumentValues();
+
+    public String getID();
 }

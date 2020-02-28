@@ -1,6 +1,7 @@
 package org.lite.spring.beans.factory.support;
 
 import org.lite.spring.beans.BeanDefinition;
+import org.lite.spring.beans.ConstructorArgument;
 import org.lite.spring.beans.PropertyValue;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ public class GenericBeanDefinition implements BeanDefinition {
 	private boolean prototype = false;
 	private String scope = SCOPE_DEFAULT;
 	private List<PropertyValue> propertyValues = new ArrayList<>();
+	private ConstructorArgument constructorArgument = new ConstructorArgument();
 
 	public GenericBeanDefinition(String id, String beanClassName) {
 		
@@ -44,6 +46,21 @@ public class GenericBeanDefinition implements BeanDefinition {
 	@Override
 	public List<PropertyValue> getPropertyValues() {
 		return this.propertyValues;
+	}
+
+	@Override
+	public ConstructorArgument getConstructorArgument() {
+		return this.constructorArgument;
+	}
+
+	@Override
+	public boolean hasConstructorArgumentValues() {
+		return !this.constructorArgument.isEmpty();
+	}
+
+	@Override
+	public String getID() {
+		return this.id;
 	}
 
 	@Override

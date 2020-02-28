@@ -28,7 +28,7 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
     public DefaultBeanFactory() {}
 
     @Override
-    public void registerBeanDefinition(String beanID,BeanDefinition bd){
+    public void registerBeanDefinition(String beanID, BeanDefinition bd){
         this.beanDefinitionMap.put(beanID, bd);
     }
 
@@ -89,7 +89,7 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
             for (PropertyValue pv : pvs) {
                 String propertyName = pv.getName();
                 Object originalValue = pv.getValue();
-                Object resolvedValue = valueResolver.resolveValueIfNecessary(originalValue);
+                Object resolvedValue = valueResolver.resolveValueIfNecessary(pv, originalValue);
 
                 for (PropertyDescriptor pd : pds) {
                     if (pd.getName().equals(propertyName)) {
@@ -123,7 +123,7 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
             for (PropertyValue pv : pvs) {
                 String propertyName = pv.getName();
                 Object originalValue = pv.getValue();
-                Object resolvedValue = valueResolver.resolveValueIfNecessary(originalValue);
+                Object resolvedValue = valueResolver.resolveValueIfNecessary(pv, originalValue);
                 BeanUtils.setProperty(bean, propertyName, resolvedValue);
             }
         } catch (Exception ex) {
@@ -132,13 +132,18 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
     }
 
     private Object instantiateBean(BeanDefinition bd) {
-        ClassLoader cl = this.getBeanClassLoader();
-        String beanClassName = bd.getBeanClassName();
-        try {
-            Class<?> clz = cl.loadClass(beanClassName);
-            return clz.newInstance();
-        } catch (Exception e) {
-            throw new BeanCreationException("Create bean for " + beanClassName + " fail");
+        if (bd.hasConstructorArgumentValues()) {
+            ConstructorResolver resolver = new ConstructorResolver(this);
+            return resolver.autowireConstructor(bd);
+        } else {
+            ClassLoader cl = this.getBeanClassLoader();
+            String beanClassName = bd.getBeanClassName();
+            try {
+                Class<?> clz = cl.loadClass(beanClassName);
+                return clz.newInstance();
+            } catch (Exception e) {
+                throw new BeanCreationException("Create bean for " + beanClassName + " fail");
+            }
         }
     }
 

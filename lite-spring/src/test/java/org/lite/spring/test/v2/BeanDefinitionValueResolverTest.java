@@ -2,6 +2,7 @@ package org.lite.spring.test.v2;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.lite.spring.beans.PropertyValue;
 import org.lite.spring.beans.factory.config.RuntimeBeanReference;
 import org.lite.spring.beans.factory.config.TypedStringValue;
 import org.lite.spring.beans.factory.support.BeanDefinitionValueResolver;
@@ -22,8 +23,9 @@ public class BeanDefinitionValueResolverTest {
 
         BeanDefinitionValueResolver resolver = new BeanDefinitionValueResolver(factory);
         RuntimeBeanReference reference = new RuntimeBeanReference("accountDao");
+        PropertyValue pv = new PropertyValue("accountDao", reference);
 
-        Object value = resolver.resolveValueIfNecessary(reference);
+        Object value = resolver.resolveValueIfNecessary(pv, reference);
 
         Assert.assertNotNull(value);
         Assert.assertTrue(value instanceof AccountDao);
@@ -38,7 +40,8 @@ public class BeanDefinitionValueResolverTest {
         BeanDefinitionValueResolver resolver = new BeanDefinitionValueResolver(factory);
 
         TypedStringValue stringValue = new TypedStringValue("test");
-        Object value = resolver.resolveValueIfNecessary(stringValue);
+        PropertyValue pv = new PropertyValue("accountDao", stringValue);
+        Object value = resolver.resolveValueIfNecessary(pv, stringValue);
         Assert.assertNotNull(value);
         Assert.assertEquals("test", value);
     }
