@@ -1,4 +1,4 @@
-package org.lite.spring.core.io.support;
+package org.lite.spring.core.io;
 
 import org.lite.spring.core.io.Resource;
 import org.lite.spring.util.ClassUtils;

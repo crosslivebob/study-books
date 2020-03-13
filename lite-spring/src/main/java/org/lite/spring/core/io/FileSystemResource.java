@@ -1,4 +1,4 @@
-package org.lite.spring.core.io.support;
+package org.lite.spring.core.io;
 
 import org.lite.spring.core.io.Resource;
 
@@ -17,6 +17,11 @@ public class FileSystemResource implements Resource {
     public FileSystemResource(String path) {
         this.path = path;
         this.file = new File(path);
+    }
+
+    public FileSystemResource(File file) {
+        this.path = file.getPath();
+        this.file = file;
     }
 
     @Override

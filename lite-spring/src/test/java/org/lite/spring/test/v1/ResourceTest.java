@@ -3,9 +3,8 @@ package org.lite.spring.test.v1;
 import org.junit.Assert;
 import org.junit.Test;
 import org.lite.spring.core.io.Resource;
-import org.lite.spring.core.io.support.ClassPathResource;
-import org.lite.spring.core.io.support.FileSystemResource;
-import org.lite.spring.util.ClassUtils;
+import org.lite.spring.core.io.ClassPathResource;
+import org.lite.spring.core.io.FileSystemResource;
 
 import java.io.IOException;
 import java.io.InputStream;

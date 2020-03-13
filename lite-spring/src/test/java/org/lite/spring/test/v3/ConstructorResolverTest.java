@@ -7,7 +7,7 @@ import org.lite.spring.beans.factory.support.ConstructorResolver;
 import org.lite.spring.beans.factory.support.DefaultBeanFactory;
 import org.lite.spring.beans.factory.xml.XmlBeanDefinitionReader;
 import org.lite.spring.core.io.Resource;
-import org.lite.spring.core.io.support.ClassPathResource;
+import org.lite.spring.core.io.ClassPathResource;
 import org.lite.spring.service.v3.PetStoreService;
 
 /**

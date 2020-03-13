@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.lite.spring.beans.BeanDefinition;
-import org.lite.spring.core.io.support.ClassPathResource;
+import org.lite.spring.core.io.ClassPathResource;
 import org.lite.spring.beans.factory.BeanCreationException;
 import org.lite.spring.beans.factory.BeanDefinitionStoreException;
 import org.lite.spring.beans.factory.support.DefaultBeanFactory;

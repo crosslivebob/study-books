@@ -1,7 +1,7 @@
 package org.lite.spring.context.support;
 
 import org.lite.spring.core.io.Resource;
-import org.lite.spring.core.io.support.ClassPathResource;
+import org.lite.spring.core.io.ClassPathResource;
 
 /**
  * Created by bfq on 2020/2/17

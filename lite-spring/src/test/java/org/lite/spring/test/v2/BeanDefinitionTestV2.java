@@ -6,7 +6,7 @@ import org.lite.spring.beans.PropertyValue;
 import org.lite.spring.beans.factory.config.RuntimeBeanReference;
 import org.lite.spring.beans.factory.support.DefaultBeanFactory;
 import org.lite.spring.beans.factory.xml.XmlBeanDefinitionReader;
-import org.lite.spring.core.io.support.ClassPathResource;
+import org.lite.spring.core.io.ClassPathResource;
 
 import java.util.List;
 
