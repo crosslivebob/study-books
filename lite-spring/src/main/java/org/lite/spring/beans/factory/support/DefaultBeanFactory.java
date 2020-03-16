@@ -5,12 +5,16 @@ import org.lite.spring.beans.BeanDefinition;
 import org.lite.spring.beans.PropertyValue;
 import org.lite.spring.beans.SimpleTypeConverter;
 import org.lite.spring.beans.factory.BeanCreationException;
+import org.lite.spring.beans.factory.config.BeanPostProcessor;
 import org.lite.spring.beans.factory.config.ConfigurableBeanFactory;
+import org.lite.spring.beans.factory.config.DependencyDescriptor;
+import org.lite.spring.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import org.lite.spring.util.ClassUtils;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,11 +25,23 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
         implements BeanDefinitionRegistry, ConfigurableBeanFactory {
 
+    private List<BeanPostProcessor> beanPostProcessors = new ArrayList<BeanPostProcessor>();
+
     private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<String, BeanDefinition>(64);
 
     private ClassLoader beanClassLoader;
 
     public DefaultBeanFactory() {}
+
+    @Override
+    public void addBeanPostProcessor(BeanPostProcessor postProcessor){
+        this.beanPostProcessors.add(postProcessor);
+    }
+
+    @Override
+    public List<BeanPostProcessor> getBeanPostProcessors() {
+        return this.beanPostProcessors;
+    }
 
     @Override
     public void registerBeanDefinition(String beanID, BeanDefinition bd){
@@ -111,6 +127,13 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
      * @param bean
      */
     private void populateBeanCommonsUtil(BeanDefinition bd, Object bean) {
+        //在此bean生命周期，将通过注解注入的操作，在此实现
+        for (BeanPostProcessor processor : this.getBeanPostProcessors()) {
+            if (processor instanceof InstantiationAwareBeanPostProcessor) {
+                ((InstantiationAwareBeanPostProcessor) processor).postProcessPropertyValues(bean, bd.getID());
+            }
+        }
+
         List<PropertyValue> pvs = bd.getPropertyValues();
 
         if (pvs == null || pvs.isEmpty()) {
@@ -155,5 +178,31 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
     @Override
     public ClassLoader getBeanClassLoader() {
         return (this.beanClassLoader != null ? this.beanClassLoader : ClassUtils.getDefaultClassLoader());
+    }
+
+    @Override
+    public Object resolveDependency(DependencyDescriptor descriptor) {
+        Class<?> typeToMatch = descriptor.getDependencyType();
+        for (BeanDefinition bd : this.beanDefinitionMap.values()) {
+            //确保BeanDefinition有Class对象
+            resolveBeanClass(bd);
+            Class<?> beanClass = bd.getBeanClass();
+            if (typeToMatch.isAssignableFrom(beanClass)) {
+                return this.getBean(bd.getID());
+            }
+        }
+        return null;
+    }
+
+    public void resolveBeanClass(BeanDefinition bd) {
+        if (bd.hasBeanClass()) {
+            return;
+        } else {
+            try {
+                bd.resolveBeanClass(this.getBeanClassLoader());
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException("can't load class:"+bd.getBeanClassName());
+            }
+        }
     }
 }

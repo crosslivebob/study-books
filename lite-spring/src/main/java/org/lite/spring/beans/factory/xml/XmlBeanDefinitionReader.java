@@ -62,6 +62,7 @@ public class XmlBeanDefinitionReader {
             for (Object object : root.elements()) {
                 Element e = (Element) object;
                 String namespaceUri = e.getNamespaceURI();
+                //判断是xml注入 还是注解注入
                 if (this.isDefaultNamespace(namespaceUri)) {
                     parseDefaultElement(e);//普通bean
                 } else if(this.isContextNamespace(namespaceUri)){

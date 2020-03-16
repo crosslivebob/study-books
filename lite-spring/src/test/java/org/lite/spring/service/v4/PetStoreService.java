@@ -1,8 +1,8 @@
 package org.lite.spring.service.v4;
 
 import org.lite.spring.beans.factory.annotation.Autowired;
-import org.lite.spring.dao.v3.AccountDao;
-import org.lite.spring.dao.v3.ItemDao;
+import org.lite.spring.dao.v4.AccountDao;
+import org.lite.spring.dao.v4.ItemDao;
 import org.lite.spring.stereotype.Component;
 
 @Component(value="petStore")

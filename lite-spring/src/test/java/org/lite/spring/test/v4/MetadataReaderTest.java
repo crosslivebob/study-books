@@ -14,7 +14,7 @@ import java.io.IOException;
 public class MetadataReaderTest {
 	@Test
 	public void testGetMetadata() throws IOException{
-		ClassPathResource resource = new ClassPathResource("org/litespring/service/v4/PetStoreService.class");
+		ClassPathResource resource = new ClassPathResource("org/lite/spring/service/v4/PetStoreService.class");
 		
 		MetadataReader reader = new SimpleMetadataReader(resource);
 		//注意：不需要单独使用ClassMetadata
@@ -30,7 +30,7 @@ public class MetadataReaderTest {
 		//注：下面对class metadata的测试并不充分
 		Assert.assertFalse(amd.isAbstract());		
 		Assert.assertFalse(amd.isFinal());
-		Assert.assertEquals("org.litespring.service.v4.PetStoreService", amd.getClassName());
+		Assert.assertEquals("org.lite.spring.service.v4.PetStoreService", amd.getClassName());
 		
 	}
 }

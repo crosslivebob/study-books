@@ -1,5 +1,7 @@
 package org.lite.spring.context.support;
 
+import org.lite.spring.beans.factory.annotation.AutowiredAnnotationProcessor;
+import org.lite.spring.beans.factory.config.ConfigurableBeanFactory;
 import org.lite.spring.context.ApplicationContext;
 import org.lite.spring.core.io.Resource;
 import org.lite.spring.beans.factory.support.DefaultBeanFactory;
@@ -19,6 +21,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         Resource resource = this.getResourceByPath(configFile);
         reader.loadBeanDefinitions(resource);
         factory.setBeanClassLoader(this.getBeanClassLoader());
+        registerBeanPostProcessors(factory);
     }
 
     @Override
@@ -26,15 +29,19 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         return this.factory.getBean(beanID);
     }
 
-    @Override
     public void setBeanClassLoader(ClassLoader beanClassLoader) {
         this.beanClassLoader = beanClassLoader;
     };
 
-    @Override
     public ClassLoader getBeanClassLoader() {
         return (this.beanClassLoader == null ? ClassUtils.getDefaultClassLoader() : this.beanClassLoader);
     };
 
     protected abstract Resource getResourceByPath(String path);
+
+    protected void registerBeanPostProcessors(ConfigurableBeanFactory beanFactory) {
+        AutowiredAnnotationProcessor postProcessor = new AutowiredAnnotationProcessor();
+        postProcessor.setBeanFactory(beanFactory);
+        beanFactory.addBeanPostProcessor(postProcessor);
+    }
 }
