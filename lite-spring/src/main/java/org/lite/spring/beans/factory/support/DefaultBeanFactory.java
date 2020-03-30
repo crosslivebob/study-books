@@ -5,6 +5,7 @@ import org.lite.spring.beans.BeanDefinition;
 import org.lite.spring.beans.PropertyValue;
 import org.lite.spring.beans.SimpleTypeConverter;
 import org.lite.spring.beans.factory.BeanCreationException;
+import org.lite.spring.beans.factory.NoSuchBeanDefinitionException;
 import org.lite.spring.beans.factory.config.BeanPostProcessor;
 import org.lite.spring.beans.factory.config.ConfigurableBeanFactory;
 import org.lite.spring.beans.factory.config.DependencyDescriptor;
@@ -69,6 +70,16 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
             return bean;
         }
         return createBean(bd);
+    }
+
+    @Override
+    public Class<?> getType(String name) throws NoSuchBeanDefinitionException {
+        BeanDefinition bd = this.getBeanDefinition(name);
+        if (bd == null) {
+            throw new NoSuchBeanDefinitionException(name);
+        }
+        resolveBeanClass(bd);
+        return bd.getBeanClass();
     }
 
     private Object createBean(BeanDefinition bd) {
