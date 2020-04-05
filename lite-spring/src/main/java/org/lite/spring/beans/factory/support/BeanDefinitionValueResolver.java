@@ -27,7 +27,6 @@ public class BeanDefinitionValueResolver {
         } else if (value instanceof TypedStringValue) {
             return ((TypedStringValue) value).getValue();
         } else {
-            //TODO
             throw new RuntimeException("the value " + value +" has not implemented");
         }
     }
