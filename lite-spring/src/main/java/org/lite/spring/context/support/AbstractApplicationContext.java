@@ -1,5 +1,6 @@
 package org.lite.spring.context.support;
 
+import org.lite.spring.aop.aspectj.AspectJAutoProxyCreator;
 import org.lite.spring.beans.factory.annotation.AutowiredAnnotationProcessor;
 import org.lite.spring.beans.factory.config.ConfigurableBeanFactory;
 import org.lite.spring.context.ApplicationContext;
@@ -7,6 +8,8 @@ import org.lite.spring.core.io.Resource;
 import org.lite.spring.beans.factory.support.DefaultBeanFactory;
 import org.lite.spring.beans.factory.xml.XmlBeanDefinitionReader;
 import org.lite.spring.util.ClassUtils;
+
+import java.util.List;
 
 /**
  * Created by bfq on 2020/2/17
@@ -40,13 +43,26 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     protected abstract Resource getResourceByPath(String path);
 
     protected void registerBeanPostProcessors(ConfigurableBeanFactory beanFactory) {
-        AutowiredAnnotationProcessor postProcessor = new AutowiredAnnotationProcessor();
-        postProcessor.setBeanFactory(beanFactory);
-        beanFactory.addBeanPostProcessor(postProcessor);
+        {
+            AutowiredAnnotationProcessor postProcessor = new AutowiredAnnotationProcessor();
+            postProcessor.setBeanFactory(beanFactory);
+            beanFactory.addBeanPostProcessor(postProcessor);
+        }
+
+        {
+            AspectJAutoProxyCreator postProcessor = new AspectJAutoProxyCreator();
+            postProcessor.setBeanFactory(beanFactory);
+            beanFactory.addBeanPostProcessor(postProcessor);
+        }
     }
 
     @Override
     public Class<?> getType(String name) {
         return this.factory.getType(name);
+    }
+
+    @Override
+    public List<Object> getBeansByType(Class<?> type) {
+        return this.factory.getBeansByType(type);
     }
 }

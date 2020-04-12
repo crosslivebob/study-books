@@ -6,7 +6,6 @@ import org.lite.spring.beans.BeanDefinition;
 import org.lite.spring.beans.ConstructorArgument;
 import org.lite.spring.beans.SimpleTypeConverter;
 import org.lite.spring.beans.factory.BeanCreationException;
-import org.lite.spring.beans.factory.config.ConfigurableBeanFactory;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -18,9 +17,9 @@ public class ConstructorResolver {
     protected final Log logger = LogFactory.getLog(getClass());
 
 
-    private final ConfigurableBeanFactory beanFactory;
+    private final AbstractBeanFactory beanFactory;
 
-    public ConstructorResolver(ConfigurableBeanFactory beanFactory) {
+    public ConstructorResolver(AbstractBeanFactory beanFactory) {
         this.beanFactory = beanFactory;
     }
 

@@ -1,7 +1,10 @@
 package org.lite.spring.aop.config;
 
 import org.lite.spring.beans.BeanUtils;
+import org.lite.spring.beans.BeansException;
 import org.lite.spring.beans.factory.BeanFactory;
+import org.lite.spring.beans.factory.BeanFactoryAware;
+import org.lite.spring.beans.factory.FactoryBean;
 import org.lite.spring.util.StringUtils;
 
 import java.lang.reflect.Method;
@@ -9,7 +12,7 @@ import java.lang.reflect.Method;
 /**
  * Created by bfq on 2020/3/30
  */
-public class MethodLocatingFactory {
+public class MethodLocatingFactory implements FactoryBean<Method>, BeanFactoryAware {
 
     private String targerBeanName;
     private String methodName;
@@ -23,7 +26,8 @@ public class MethodLocatingFactory {
         this.methodName = methodName;
     }
 
-    public void setBeanFactorty(BeanFactory beanFactory) {
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) {
         if (!StringUtils.hasText(this.targerBeanName)) {
             throw new IllegalArgumentException("Property 'targetBeanName' is required");
         }
@@ -44,7 +48,13 @@ public class MethodLocatingFactory {
         }
     }
 
+    @Override
     public Method getObject() {
         return this.method;
+    }
+
+    @Override
+    public Class<?> getObjectType() {
+        return Method.class;
     }
 }

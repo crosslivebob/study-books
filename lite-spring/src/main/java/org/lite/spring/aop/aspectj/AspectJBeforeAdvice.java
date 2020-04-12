@@ -1,6 +1,7 @@
 package org.lite.spring.aop.aspectj;
 
 import org.aopalliance.intercept.MethodInvocation;
+import org.lite.spring.aop.config.AspectInstanceFactory;
 
 import java.lang.reflect.Method;
 
@@ -8,8 +9,8 @@ import java.lang.reflect.Method;
  * Created by bfq on 2020/4/4
  */
 public class AspectJBeforeAdvice extends AbstractAspectJAdvice {
-    public AspectJBeforeAdvice(Method adviceMethod,AspectJExpressionPointcut pointcut,Object adviceObject){
-        super(adviceMethod,pointcut,adviceObject);
+    public AspectJBeforeAdvice(Method adviceMethod,AspectJExpressionPointcut pointcut,AspectInstanceFactory adviceObjectFactory){
+        super(adviceMethod,pointcut,adviceObjectFactory);
     }
 
     @Override

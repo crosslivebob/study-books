@@ -25,7 +25,7 @@ public class MethodLocatingFactotyTest {
         MethodLocatingFactory methodLocatingFactory = new MethodLocatingFactory();
         methodLocatingFactory.setTargetBeanName("tx");
         methodLocatingFactory.setMethodName("start");
-        methodLocatingFactory.setBeanFactorty(beanFactory);
+        methodLocatingFactory.setBeanFactory(beanFactory);
 
         Method m = methodLocatingFactory.getObject();
 

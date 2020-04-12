@@ -2,9 +2,11 @@ package org.lite.spring.beans.factory.support;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.lite.spring.beans.BeanDefinition;
+import org.lite.spring.beans.BeansException;
 import org.lite.spring.beans.PropertyValue;
 import org.lite.spring.beans.SimpleTypeConverter;
 import org.lite.spring.beans.factory.BeanCreationException;
+import org.lite.spring.beans.factory.BeanFactoryAware;
 import org.lite.spring.beans.factory.NoSuchBeanDefinitionException;
 import org.lite.spring.beans.factory.config.BeanPostProcessor;
 import org.lite.spring.beans.factory.config.ConfigurableBeanFactory;
@@ -23,8 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by bfq on 2020/2/13
  */
-public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
-        implements BeanDefinitionRegistry, ConfigurableBeanFactory {
+public class DefaultBeanFactory extends AbstractBeanFactory implements BeanDefinitionRegistry {
 
     private List<BeanPostProcessor> beanPostProcessors = new ArrayList<BeanPostProcessor>();
 
@@ -82,15 +83,67 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
         return bd.getBeanClass();
     }
 
-    private Object createBean(BeanDefinition bd) {
+    @Override
+    public List<Object> getBeansByType(Class<?> type) {
+        List<Object> result = new ArrayList<>();
+        List<String> beanIDs = this.getBeanIDsByType(type);
+        for(String beanID : beanIDs){
+            result.add(this.getBean(beanID));
+        }
+        return result;
+    }
+
+    private List<String> getBeanIDsByType(Class<?> type){
+        List<String> result = new ArrayList<String>();
+        for(String beanName :this.beanDefinitionMap.keySet()){
+            if(type.isAssignableFrom(this.getType(beanName))){
+                result.add(beanName);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    protected Object createBean(BeanDefinition bd) {
         //创建实例
         Object bean = instantiateBean(bd);
         //设置属性
 //        populateBean(bd, bean);
         populateBeanCommonsUtil(bd, bean);
 
+        //初始化bean
+        bean = initializeBean(bd, bean);
+
         return bean;
     }
+
+    private Object initializeBean(BeanDefinition bd, Object bean) {
+        invokeAwareMethods(bean);
+        //Todo 调用Bean的init方法，暂不实现
+        if (!bd.isSynthetic()) {
+            return applyBeanPostProcessorsAfterInitialization(bean, bd.getID());
+        }
+        return bean;
+    }
+
+    private Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName)
+            throws BeansException {
+        Object result = existingBean;
+        for (BeanPostProcessor beanProcessor : getBeanPostProcessors()) {
+            result = beanProcessor.afterInitialization(result, beanName);
+            if (result == null) {
+                return result;
+            }
+        }
+        return result;
+    }
+
+    private void invokeAwareMethods(final Object bean) {
+        if (bean instanceof BeanFactoryAware) {
+            ((BeanFactoryAware) bean).setBeanFactory(this);
+        }
+    }
+
 
     /**
      * 大致流程如下：

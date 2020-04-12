@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.lite.spring.aop.config.ConfigBeanDefinitionParser;
 import org.lite.spring.beans.BeanDefinition;
 import org.lite.spring.beans.ConstructorArgument;
 import org.lite.spring.beans.PropertyValue;
@@ -43,6 +44,8 @@ public class XmlBeanDefinitionReader {
 
     public static final String CONTEXT_NAMESPACE_URI = "http://www.springframework.org/schema/context";
 
+    public static final String AOP_NAMESPACE_URI = "http://www.springframework.org/schema/aop";
+
     private static final String BASE_PACKAGE_ATTRIBUTE = "base-package";
 
     BeanDefinitionRegistry registry;
@@ -67,6 +70,8 @@ public class XmlBeanDefinitionReader {
                     parseDefaultElement(e);//普通bean
                 } else if(this.isContextNamespace(namespaceUri)){
                     parseComponentElement(e); //例如<context:component-scan>
+                } else if (this.isAOPNamespace(namespaceUri)) {
+                    parseAOPElement(e);  //例如 <aop:config>
                 }
             }
 
@@ -109,6 +114,9 @@ public class XmlBeanDefinitionReader {
     }
     public boolean isContextNamespace(String namespaceUri){
         return (!StringUtils.hasLength(namespaceUri) || CONTEXT_NAMESPACE_URI.equals(namespaceUri));
+    }
+    public boolean isAOPNamespace(String namespaceUri){
+        return (!StringUtils.hasLength(namespaceUri) || AOP_NAMESPACE_URI.equals(namespaceUri));
     }
 
     public void parsePropertyElement(Element e, BeanDefinition bd) {
@@ -172,5 +180,10 @@ public class XmlBeanDefinitionReader {
         }
 
         bd.getConstructorArgument().addArgumentValue(valueHolder);
+    }
+
+    private void parseAOPElement(Element ele) {
+        ConfigBeanDefinitionParser parser = new ConfigBeanDefinitionParser();
+        parser.parse(ele, this.registry);
     }
 }
